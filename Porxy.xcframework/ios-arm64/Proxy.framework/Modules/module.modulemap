@@ -1,0 +1,11 @@
+framework module Proxy {
+  umbrella header "Proxy.h"
+  export *
+
+  module * { export * }
+}
+
+module Proxy.Swift {
+  header "Proxy-Swift.h"
+  requires objc
+}

@@ -1,0 +1,372 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "TopLevel",
+    "printedName": "TopLevel",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Proxy",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "UIKit",
+        "printedName": "UIKit",
+        "declKind": "Import",
+        "moduleName": "Proxy"
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "Proxy",
+        "printedName": "Proxy",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "Port",
+            "printedName": "Port",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:5ProxyAAC4PortSivpZ",
+            "mangledName": "$s5ProxyAAC4PortSivpZ",
+            "moduleName": "Proxy",
+            "static": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "Final",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "isLet": true,
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:5ProxyAAC4PortSivgZ",
+                "mangledName": "$s5ProxyAAC4PortSivgZ",
+                "moduleName": "Proxy",
+                "static": true,
+                "implicit": true,
+                "declAttributes": [
+                  "Final"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "makeStartProxy",
+            "printedName": "makeStartProxy(cureentIp:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.String?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "hasDefaultArg": true,
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:5ProxyAAC09makeStartA09cureentIp_10Foundation4DataVSS_SSSgtFZ",
+            "mangledName": "$s5ProxyAAC09makeStartA09cureentIp_10Foundation4DataVSS_SSSgtFZ",
+            "moduleName": "Proxy",
+            "static": true,
+            "declAttributes": [
+              "Final",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "makeStop",
+            "printedName": "makeStop()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:5ProxyAAC8makeStop10Foundation4DataVyFZ",
+            "mangledName": "$s5ProxyAAC8makeStop10Foundation4DataVyFZ",
+            "moduleName": "Proxy",
+            "static": true,
+            "declAttributes": [
+              "Final",
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "s:5ProxyAAC",
+        "mangledName": "$s5ProxyAAC",
+        "moduleName": "Proxy",
+        "declAttributes": [
+          "AccessControl"
+        ],
+        "hasMissingDesignatedInitializers": true
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": [
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 170,
+      "length": 4,
+      "value": "5690"
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 328,
+      "length": 3,
+      "value": "\".\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 395,
+      "length": 1,
+      "value": "3"
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 416,
+      "length": 3,
+      "value": "\".\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 490,
+      "length": 12,
+      "value": "\"tclVersion\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 506,
+      "length": 7,
+      "value": "\"1.0.0\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 533,
+      "length": 12,
+      "value": "\"deviceName\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 591,
+      "length": 8,
+      "value": "\"wlanIp\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 614,
+      "length": 4,
+      "value": "\".1\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 638,
+      "length": 6,
+      "value": "\"type\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 648,
+      "length": 1,
+      "value": "1"
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 669,
+      "length": 13,
+      "value": "\"serviceData\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 686,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 708,
+      "length": 19,
+      "value": "\"extendServiceData\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 731,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 762,
+      "length": 32,
+      "value": "\"device_discover: \""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 793,
+      "length": 1,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 849,
+      "length": 4,
+      "value": "\"\\\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 861,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 910,
+      "length": 3,
+      "value": "\"[\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 921,
+      "length": 3,
+      "value": "\"{\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 971,
+      "length": 3,
+      "value": "\"]\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 982,
+      "length": 3,
+      "value": "\"}\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 1115,
+      "length": 5,
+      "value": "\"TCL\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1149,
+      "length": 4,
+      "value": "0x00"
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1177,
+      "length": 4,
+      "value": "0x01"
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 1205,
+      "length": 17,
+      "value": "\"#192.168.0.255#\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "StringLiteral",
+      "offset": 1436,
+      "length": 5,
+      "value": "\"TCL\""
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1470,
+      "length": 4,
+      "value": "0x01"
+    },
+    {
+      "filePath": "\/Users\/bm\/Library\/Containers\/com.tencent.xinWeChat\/Data\/Library\/Application Support\/com.tencent.xinWeChat\/2.0b4.0.9\/1fcf22a3e3a77d69e9799c7ccaf24909\/Message\/MessageTemp\/1fcf22a3e3a77d69e9799c7ccaf24909\/File\/Porxy\/Proxy\/Proxy.swift",
+      "kind": "IntegerLiteral",
+      "offset": 1498,
+      "length": 4,
+      "value": "0x01"
+    }
+  ]
+}

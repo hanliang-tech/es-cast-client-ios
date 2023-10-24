@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -11,10 +11,7 @@
 		802A87702ADCFC0A00388BE7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802A876F2ADCFC0A00388BE7 /* ContentView.swift */; };
 		802A87722ADCFC0B00388BE7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 802A87712ADCFC0B00388BE7 /* Assets.xcassets */; };
 		802A87752ADCFC0B00388BE7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 802A87742ADCFC0B00388BE7 /* Preview Assets.xcassets */; };
-		802A87922ADCFE4E00388BE7 /* es-cast-client-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 802A87912ADCFE4E00388BE7 /* es-cast-client-ios */; };
-		802A87982ADD00FC00388BE7 /* es-cast-client-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 802A87972ADD00FC00388BE7 /* es-cast-client-ios */; };
-		80DCFA322AE66DDD00409CDB /* es-cast-client-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 80DCFA312AE66DDD00409CDB /* es-cast-client-ios */; };
-		80DCFA3E2AE776D700409CDB /* es-cast-client-ios in Frameworks */ = {isa = PBXBuildFile; productRef = 80DCFA3D2AE776D700409CDB /* es-cast-client-ios */; };
+		A836B265BA98332A43162111 /* Pods_demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7EFD685CE94907BCC3EBF5B0 /* Pods_demo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,12 +28,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7B2E34CAF7A7112E133EF436 /* Pods-demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.release.xcconfig"; path = "Target Support Files/Pods-demo/Pods-demo.release.xcconfig"; sourceTree = "<group>"; };
+		7EFD685CE94907BCC3EBF5B0 /* Pods_demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		802A876A2ADCFC0A00388BE7 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		802A876D2ADCFC0A00388BE7 /* demoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = demoApp.swift; sourceTree = "<group>"; };
 		802A876F2ADCFC0A00388BE7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		802A87712ADCFC0B00388BE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		802A87742ADCFC0B00388BE7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		802A87902ADCFE3A00388BE7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		DE2092CCCDD64DC0F29DD9BE /* Pods-demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-demo.debug.xcconfig"; path = "Target Support Files/Pods-demo/Pods-demo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,10 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				80DCFA322AE66DDD00409CDB /* es-cast-client-ios in Frameworks */,
-				802A87982ADD00FC00388BE7 /* es-cast-client-ios in Frameworks */,
-				80DCFA3E2AE776D700409CDB /* es-cast-client-ios in Frameworks */,
-				802A87922ADCFE4E00388BE7 /* es-cast-client-ios in Frameworks */,
+				A836B265BA98332A43162111 /* Pods_demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +56,8 @@
 			children = (
 				802A876C2ADCFC0A00388BE7 /* demo */,
 				802A876B2ADCFC0A00388BE7 /* Products */,
+				E9AC29329F487002CDA8A299 /* Pods */,
+				EAC0BE7297EB4A6BF47DD2C7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -90,6 +89,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		E9AC29329F487002CDA8A299 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DE2092CCCDD64DC0F29DD9BE /* Pods-demo.debug.xcconfig */,
+				7B2E34CAF7A7112E133EF436 /* Pods-demo.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		EAC0BE7297EB4A6BF47DD2C7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7EFD685CE94907BCC3EBF5B0 /* Pods_demo.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -97,22 +113,18 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 802A87782ADCFC0B00388BE7 /* Build configuration list for PBXNativeTarget "demo" */;
 			buildPhases = (
+				6EDFA42D2304DAA1E8C6DC1A /* [CP] Check Pods Manifest.lock */,
 				802A87662ADCFC0A00388BE7 /* Sources */,
 				802A87672ADCFC0A00388BE7 /* Frameworks */,
 				802A87682ADCFC0A00388BE7 /* Resources */,
 				80518B622AE1ACC30092C8FA /* Embed Frameworks */,
+				3DDF772F96D4E9C6D9055B5A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = demo;
-			packageProductDependencies = (
-				802A87912ADCFE4E00388BE7 /* es-cast-client-ios */,
-				802A87972ADD00FC00388BE7 /* es-cast-client-ios */,
-				80DCFA312AE66DDD00409CDB /* es-cast-client-ios */,
-				80DCFA3D2AE776D700409CDB /* es-cast-client-ios */,
-			);
 			productName = demo;
 			productReference = 802A876A2ADCFC0A00388BE7 /* demo.app */;
 			productType = "com.apple.product-type.application";
@@ -141,9 +153,6 @@
 				Base,
 			);
 			mainGroup = 802A87612ADCFC0A00388BE7;
-			packageReferences = (
-				80DCFA3C2AE776D700409CDB /* XCLocalSwiftPackageReference ".." */,
-			);
 			productRefGroup = 802A876B2ADCFC0A00388BE7 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -164,6 +173,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3DDF772F96D4E9C6D9055B5A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-demo/Pods-demo-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-demo/Pods-demo-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-demo/Pods-demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6EDFA42D2304DAA1E8C6DC1A /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-demo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		802A87662ADCFC0A00388BE7 /* Sources */ = {
@@ -299,6 +350,7 @@
 		};
 		802A87792ADCFC0B00388BE7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DE2092CCCDD64DC0F29DD9BE /* Pods-demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -308,6 +360,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"demo/Preview Content\"";
 				DEVELOPMENT_TEAM = SAH3D8D9FY;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/demo",
@@ -337,6 +390,7 @@
 		};
 		802A877A2ADCFC0B00388BE7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7B2E34CAF7A7112E133EF436 /* Pods-demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -346,6 +400,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"demo/Preview Content\"";
 				DEVELOPMENT_TEAM = SAH3D8D9FY;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/demo",
@@ -395,32 +450,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		80DCFA3C2AE776D700409CDB /* XCLocalSwiftPackageReference ".." */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ..;
-		};
-/* End XCLocalSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		802A87912ADCFE4E00388BE7 /* es-cast-client-ios */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = "es-cast-client-ios";
-		};
-		802A87972ADD00FC00388BE7 /* es-cast-client-ios */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = "es-cast-client-ios";
-		};
-		80DCFA312AE66DDD00409CDB /* es-cast-client-ios */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = "es-cast-client-ios";
-		};
-		80DCFA3D2AE776D700409CDB /* es-cast-client-ios */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = "es-cast-client-ios";
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 802A87622ADCFC0A00388BE7 /* Project object */;
 }

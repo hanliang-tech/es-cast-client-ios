@@ -1,0 +1,16 @@
+PODS:
+  - es-cast-client-ios (0.1.0)
+
+DEPENDENCIES:
+  - es-cast-client-ios (from `../`)
+
+EXTERNAL SOURCES:
+  es-cast-client-ios:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  es-cast-client-ios: dd2d2f970d6f8632f03e46e7f7d4783012be1694
+
+PODFILE CHECKSUM: cc495f93fd775018419d1b95a94610a288f5a9fe
+
+COCOAPODS: 1.13.0

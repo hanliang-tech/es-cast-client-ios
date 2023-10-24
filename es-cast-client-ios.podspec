@@ -14,9 +14,8 @@ Pod::Spec.new do |s|
 
     s.ios.deployment_target = '12.0'
     s.swift_version = '5.0'
-    
+
     s.vendored_frameworks = 'Proxy.xcframework'
-    s.xcconfig = { 'OTHER_LDFLAGS' => '$(inherited) -framework Proxy' }
 
     s.source_files = 'Sources/es-cast-client-ios/**/*'
 end

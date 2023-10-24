@@ -20,5 +20,5 @@ let package = Package(
         .testTarget(
             name: "es-cast-client-iosTests",
             dependencies: ["es-cast-client-ios"]),
-        .binaryTarget(name: "Proxy", path: "./Porxy.xcframework"),
+        .binaryTarget(name: "Proxy", path: "./Proxy.xcframework"),
     ])

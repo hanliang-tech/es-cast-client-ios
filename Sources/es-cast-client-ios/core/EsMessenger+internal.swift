@@ -44,7 +44,9 @@ extension EsMessenger {
             hosts.forEach { host in
                 if host != ip {
                     DispatchQueue.global().async {
-                        self.sendData(message: Message(type: .search, data: Utils.deviceInfo()), toHost: host, port: port)
+                        var msg: Message = .init(type: .search, data: nil)
+                        msg.addConfig()
+                        self.sendData(message: msg, toHost: host, port: port)
                     }
                 }
             }

@@ -18,6 +18,8 @@ public class EsMessenger: NSObject {
     public static let shared: EsMessenger = .init()
     /// 是否显示日志
     public var isDebugLogEnabled: Bool = true
+    
+    public var config: ESConfig.Type = ESConfig.self
     /// 本机IP地址
     public var iPAddress: String? {
         Utils.getIPAddress()
@@ -71,7 +73,9 @@ public extension EsMessenger {
      */
     func checkDeviceOnline(device: EsDevice, timeout: TimeInterval = 1, pingCallBack: ((Bool) -> Void)? = nil) {
         self.pingCallBack = pingCallBack
-        sendData(message: .init(type: .ping, data: nil),
+        var msg: Message = .init(type: .ping, data: nil)
+        msg.addConfig()
+        sendData(message: msg,
                  toHost: device.deviceIp,
                  port: device.devicePort)
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
@@ -104,7 +108,9 @@ public extension EsMessenger {
      - Parameter command: EsCommand 对象表示的命令
      */
     func sendDeviceCommand(device: EsDevice, action: EsAction) {
-        sendData(message: .init(type: .event, data: action.data),
+        var msg: Message = .init(type: .event, data: action.data)
+        msg.addConfig()
+        sendData(message: msg,
                  toHost: device.deviceIp,
                  port: device.devicePort)
     }

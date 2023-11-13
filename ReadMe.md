@@ -73,10 +73,12 @@ EsMessenger.shared
         .splash(.display))
         
 // 添加配置
-ESConfig.device.aaid("aaid_is_31231")
-ESConfig.device.oaid("oaid_is_31231")
+ESConfig.device.idfa("idfa_is_31231")
+ESConfig.device.custom("some_key", value: "some_value")
+ESConfig.device.custom("some_key1", value: "some_value1")
+        
 // 或者
-EsMessenger.shared.config.device.aaid("aaid_is_31231")
+EsMessenger.shared.config.device.idfa("idfa_is_31231")
 ```
 
 ##### 3.1、常用操作指令

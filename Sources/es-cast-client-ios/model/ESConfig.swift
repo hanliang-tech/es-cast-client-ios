@@ -16,13 +16,13 @@ public extension ESConfig {
         var data: [String: Any] = [:]
 
         @discardableResult
-        public func oaid(_ id: String) -> ESConfig.Device {
-            data["oaid"] = id
+        public func idfa(_ idfa: String) -> ESConfig.Device {
+            data["idfa"] = idfa
             return self
         }
-
-        public func aaid(_ id: String) -> ESConfig.Device {
-            data["aaid"] = id
+        @discardableResult
+        public func custom(_ key: String, value: String) -> ESConfig.Device {
+            data[key] = value
             return self
         }
     }

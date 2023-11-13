@@ -71,6 +71,12 @@ EsMessenger.shared
         .sendDeviceCommand(device: deive, action: .makeStartApp(apk: "xxx")
         .args("123")
         .splash(.display))
+        
+// 添加配置
+ESConfig.device.aaid("aaid_is_31231")
+ESConfig.device.oaid("oaid_is_31231")
+// 或者
+EsMessenger.shared.config.device.aaid("aaid_is_31231")
 ```
 
 ##### 3.1、常用操作指令

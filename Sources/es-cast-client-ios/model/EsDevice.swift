@@ -8,22 +8,22 @@
 import Foundation
 
 /**
-    表示 Messenger 发现的 EsDevice。
+   表示 Messenger 发现的 EsDevice。
 
-    - 注意: 该类提供了有关发现设备的信息。
+   - 注意: 该类提供了有关发现设备的信息。
 
-    - 参数 id: 发现设备的唯一标识。
-    - 参数 deviceName: 发现设备的名称。
-    - 参数 deviceIp: 发现设备的IP地址。
-    - 参数 devicePort: 发现设备的端口。
-    - 参数 from: 发现起源的 APK 包名称。
-    - 参数 findTime: 设备发现的时间戳。
-    - 参数 version: 设备支持的协议版本。
-  */
+   - 参数 id: 发现设备的唯一标识。
+   - 参数 deviceName: 发现设备的名称。
+   - 参数 deviceIp: 发现设备的IP地址。
+   - 参数 devicePort: 发现设备的端口。
+   - 参数 from: 发现起源的 APK 包名称。
+   - 参数 findTime: 设备发现的时间戳。
+   - 参数 version: 设备支持的协议版本。
+ */
 public struct EsDevice {
     /// 发现设备的唯一标识。
     public let id: String
-    
+
     /// 发现设备的名称。
     public let deviceName: String
 
@@ -65,7 +65,7 @@ enum MessageType: Int {
 
 struct Message {
     let type: MessageType
-    let data: [String: Any]?
+    var data: [String: Any]?
 
     func toDic() -> [String: Any] {
         var dic: [String: Any] = [
@@ -73,6 +73,14 @@ struct Message {
         ]
         dic["data"] = data
         return dic
+    }
+
+    mutating func addConfig() {
+        if data != nil {
+            data!["device"] = ESConfig.device.data
+        } else {
+            data = ["device": ESConfig.device.data]
+        }
     }
 }
 

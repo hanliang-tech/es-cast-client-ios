@@ -61,8 +61,16 @@ public class EsAction {
         }
         return self
     }
-}
 
+    /// 添加自定义参数
+    /// - Parameter key: 操作参数
+    /// - Parameter value: 操作参数
+    /// - Returns: 返回当前的EsAction以支持链式调用
+    public func add(withKey key: String, value: Decodable) -> EsAction {
+        data[key] = value
+        return self
+    }
+}
 
 // MARK: - Maker
 

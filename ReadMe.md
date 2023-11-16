@@ -79,6 +79,12 @@ ESConfig.device.custom("some_key1", value: "some_value1")
         
 // 或者
 EsMessenger.shared.config.device.idfa("idfa_is_31231")
+
+// 添加自定义参数
+EsMessenger.shared.sendDeviceCommand(device: deive, action:
+    .makeStartEs(pkg: "es.hello.world")
+        .flags(8)
+        .add(withKey: "pageTag", value: "pageTag"))
 ```
 
 ##### 3.1、常用操作指令

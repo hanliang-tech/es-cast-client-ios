@@ -20,7 +20,7 @@ class UDP {
     private var live = true
     private var queue: DispatchQueue?
     private let lock = DispatchSemaphore(value: 3)
-    private let bufferSize = 1024
+    private let bufferSize = 1024 * 4 // 4k
     private let buffer: UnsafeMutableRawPointer
 
     init(port: Int = 0) throws {

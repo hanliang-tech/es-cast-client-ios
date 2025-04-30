@@ -13,6 +13,12 @@ public protocol MessengerCallback: AnyObject {
     func onReceiveEvent(_ event: EsEvent)
 }
 
+/// 专门用于包裹 MessengerCallback 的弱引用包装器
+class WeakMessengerCallbackWrapper {
+    weak var value: MessengerCallback?
+    init(value: MessengerCallback) { self.value = value }
+}
+
 public class EsMessenger: NSObject {
     /// 单例
     public static let shared: EsMessenger = .init()
@@ -30,8 +36,35 @@ public class EsMessenger: NSObject {
     /// 接收到事件回调
     public var onReceiveEventCallback: ((EsEvent) -> Void)?
 
-    /// 消息回调
-    public weak var delegate: MessengerCallback?
+    /// 多播消息回调
+    var delegates: [WeakMessengerCallbackWrapper] = []
+
+    /// 添加回调对象
+    public func addDelegate(_ delegate: MessengerCallback) {
+        // 避免重复添加
+        if !delegates.contains(where: { $0.value === delegate }) {
+            delegates.append(WeakMessengerCallbackWrapper(value: delegate))
+        }
+        cleanDelegates()
+    }
+
+    /// 移除回调对象
+    public func removeDelegate(_ delegate: MessengerCallback) {
+        delegates.removeAll { $0.value === delegate }
+        cleanDelegates()
+    }
+
+    /// 清理已释放的 delegate
+    private func cleanDelegates() {
+        delegates = delegates.filter { $0.value != nil }
+    }
+
+    /// 兼容旧接口：setMessengerCallback 实际调用 addDelegate
+    @available(*, deprecated, message: "请使用 addDelegate/removeDelegate 以支持多播代理")
+    func setMessengerCallback(_ callback: MessengerCallback) {
+        addDelegate(callback)
+    }
+
 
     /// ping回调
     var pingCallBack: ((Bool) -> Void)?
@@ -53,9 +86,7 @@ public extension EsMessenger {
 
      - Parameter callback: 实现 MessengerCallback 协议的回调对象
      */
-    func setMessengerCallback(_ callback: MessengerCallback) {
-        delegate = callback
-    }
+
 
     /**
      开始搜索设备。

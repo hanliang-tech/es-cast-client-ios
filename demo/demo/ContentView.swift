@@ -174,7 +174,7 @@ class Store: ObservableObject, MessengerCallback {
     @Published var online: OnlineStatus = .unknown
 
     init() {
-        EsMessenger.shared.delegate = self
+        EsMessenger.shared.addDelegate(self)
         ESConfig.device.idfa("idfa_is_31231")
         ESConfig.device.custom("some_key", value: "some_value")
         ESConfig.device.custom("some_key1", value: "some_value1")

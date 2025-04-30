@@ -26,25 +26,39 @@ end
 <img src="./demo.jpeg" alt="demo" style="zoom:25%;" /><img src="./demo2.jpg" alt="demo" style="zoom:25%;" />
 
 #### 2、回调
-``` swift
-// 注册sdk代理回调
-EsMessenger.shared.delegate = self
+
+##### 多播代理支持（推荐）
+EsMessenger 现已支持注册多个 MessengerCallback 代理对象，所有代理对象都能收到事件回调。
+
+```swift
+// 注册多个回调对象
+EsMessenger.shared.addDelegate(self)
+EsMessenger.shared.addDelegate(otherObj)
+
+// 移除回调对象
+EsMessenger.shared.removeDelegate(self)
+
 // 回调协议
-public protocol MessengerCallback {
+public protocol MessengerCallback: AnyObject {
     func onFindDevice(_ device: EsDevice)
     func onReceiveEvent(_ event: EsEvent)
 }
+```
 
-// 使用闭包回调
-EsMessenger.shared.onFindDeviceCallback = {  device in
+- 所有通过 addDelegate 注册的对象都将收到 onFindDevice/onReceiveEvent 回调。
+- 内部采用 weak 弱引用机制，不会导致内存泄漏。代理对象释放后会自动从回调列表移除。
+- 旧的 setMessengerCallback 方法已废弃，请统一使用 addDelegate/removeDelegate。
+
+##### 闭包回调
+```swift
+EsMessenger.shared.onFindDeviceCallback = { device in
     print("onFindDeviceCallback: \(device)")
 }
-        
-EsMessenger.shared.onReceiveEventCallback = {  event in
+EsMessenger.shared.onReceiveEventCallback = { event in
     print("onReceiveEventCallback: \(event)")
 }
-
 ```
+
 
 #### 3、基本使用
 

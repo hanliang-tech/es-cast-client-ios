@@ -41,6 +41,16 @@ public struct EsDevice {
 
     /// 设备支持的协议版本。
     public let version: Int
+    
+    public init(id: String, deviceName: String, deviceIp: String, devicePort: Int, from: String, findTime: TimeInterval, version: Int) {
+        self.id = id
+        self.deviceName = deviceName
+        self.deviceIp = deviceIp
+        self.devicePort = devicePort
+        self.from = from
+        self.findTime = findTime
+        self.version = version
+    }
 }
 
 extension EsDevice {

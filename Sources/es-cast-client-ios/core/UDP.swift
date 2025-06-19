@@ -19,8 +19,12 @@ class UDP {
     private let listener: Int32
     private var live = true
     private var queue: DispatchQueue?
-    private let lock = DispatchSemaphore(value: 3)
-    private let bufferSize = 1024 * 4 // 4k
+    private let lock = DispatchSemaphore(value: 1)
+    private let bufferSize = 1024 * 4
+    private static let pauseSleepMicroseconds: UInt32 = 10000
+    private static let errorSleepMicroseconds: UInt32 = 10000
+    private static let ipRangeStart = 2
+    private static let ipRangeEnd = 254
     private let buffer: UnsafeMutableRawPointer
 
     init(port: Int = 0) throws {
@@ -53,6 +57,7 @@ class UDP {
 
     deinit {
         live = false
+        isRunning = false
         free(self.buffer)
         close(listener)
     }
@@ -115,7 +120,7 @@ class UDP {
                 _ = self?.send(to: UDP.setupAddress(ip: targetIp, port: Proxy.Port), with: buffer)
             }
         } else {
-            for i in 2 ..< 254 {
+            for i in Self.ipRangeStart ..< Self.ipRangeEnd {
                 DispatchQueue.global().async { [weak self] in
                     _ = self?.send(to: UDP.setupAddress(ip: "\(ipPrefix).\(i)", port: Proxy.Port), with: buffer)
                 }
@@ -123,24 +128,53 @@ class UDP {
         }
     }
 
+    private var isRunning = false
+    private var callback: ((_ udp: UDP, _ data: Data, _ ip: String, _ prot: Int) -> Void)?
+    
     public func run(callback: @escaping (_ udp: UDP, _ data: Data, _ ip: String, _ prot: Int) -> Void) throws {
         guard let q = queue else {
             throw Exception.unableToBind
         }
+        
+        self.callback = callback
+        
+        if isRunning {
+            live = true
+            return
+        }
+        
         live = true
+        isRunning = true
+        
+        var flags = fcntl(listener, F_GETFL, 0)
+        fcntl(listener, F_SETFL, flags | O_NONBLOCK)
+        
         q.async {
-            while self.live {
+            while self.isRunning {
+                if !self.live {
+                    usleep(Self.pauseSleepMicroseconds)
+                    continue
+                }
+                
                 self.lock.wait()
                 var host = sockaddr()
                 var size: UInt32 = socklen_t(MemoryLayout<sockaddr_storage>.size)
                 let r = recvfrom(self.listener, self.buffer, self.bufferSize, 0, &host, &size)
+                
                 if r > 0, size <= MemoryLayout<sockaddr_in>.size {
                     let data = Data(bytes: self.buffer, count: r)
                     let address = UDP.cast(address: host)
                     let ip = String(cString: inet_ntoa(address.sin_addr))
-                    let port = Int(in_port_t(bigEndian: address.sin_port))
-                    callback(self, data, ip, port)
+                    let prot = Int(UInt16(bigEndian: address.sin_port))
+                    self.callback?(self, data, ip, prot)
+                } else if r < 0 {
+                    let error = errno
+                    if error != EAGAIN && error != EWOULDBLOCK {
+                        break
+                    }
+                    usleep(Self.errorSleepMicroseconds)
                 }
+                
                 self.lock.signal()
             }
         }

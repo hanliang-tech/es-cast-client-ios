@@ -37,26 +37,70 @@ public class EsMessenger: NSObject {
     public var onReceiveEventCallback: ((EsEvent) -> Void)?
 
     /// 多播消息回调
-    var delegates: [WeakMessengerCallbackWrapper] = []
+    private var delegates: [WeakMessengerCallbackWrapper] = []
+    private let delegatesQueue = DispatchQueue(label: "EsMessenger.delegates", attributes: .concurrent)
+    
+    /// 监听状态管理
+    private let stateQueue = DispatchQueue(label: "EsMessenger.state", attributes: .concurrent)
+    private var _isManualStopped: Bool = false
+    private var _wasRunningBeforeBackground: Bool = false
+    
+    private var isManualStopped: Bool {
+        get { stateQueue.sync { _isManualStopped } }
+        set { stateQueue.async(flags: .barrier) { self._isManualStopped = newValue } }
+    }
+    
+    private var wasRunningBeforeBackground: Bool {
+        get { stateQueue.sync { _wasRunningBeforeBackground } }
+        set { stateQueue.async(flags: .barrier) { self._wasRunningBeforeBackground = newValue } }
+    }
 
     /// 添加回调对象
     public func addDelegate(_ delegate: MessengerCallback) {
-        // 避免重复添加
-        if !delegates.contains(where: { $0.value === delegate }) {
-            delegates.append(WeakMessengerCallbackWrapper(value: delegate))
+        delegatesQueue.async(flags: .barrier) {
+            if !self.delegates.contains(where: { $0.value === delegate }) {
+                self.delegates.append(WeakMessengerCallbackWrapper(value: delegate))
+            }
+            self.cleanDelegates()
         }
-        cleanDelegates()
     }
 
     /// 移除回调对象
     public func removeDelegate(_ delegate: MessengerCallback) {
-        delegates.removeAll { $0.value === delegate }
-        cleanDelegates()
+        delegatesQueue.async(flags: .barrier) {
+            self.delegates.removeAll { $0.value === delegate }
+            self.cleanDelegates()
+        }
     }
 
     /// 清理已释放的 delegate
     private func cleanDelegates() {
         delegates = delegates.filter { $0.value != nil }
+    }
+    
+    /// 线程安全的delegate通知
+    private func notifyDelegates(_ action: @escaping (MessengerCallback) -> Void) {
+        delegatesQueue.sync {
+            self.delegates.forEach { wrapper in
+                if let delegate = wrapper.value {
+                    action(delegate)
+                }
+            }
+        }
+    }
+    
+    /// 处理ping响应
+    func handlePingResponse(from deviceKey: String, success: Bool) {
+        pingQueue.async(flags: .barrier) {
+            let matchingKeys = self.pingCallbacks.keys.filter { $0.hasPrefix(deviceKey) }
+            for key in matchingKeys {
+                if let callback = self.pingCallbacks.removeValue(forKey: key) {
+                    DispatchQueue.main.async {
+                        callback(success)
+                    }
+                }
+            }
+        }
     }
 
     /// 兼容旧接口：setMessengerCallback 实际调用 addDelegate
@@ -66,8 +110,9 @@ public class EsMessenger: NSObject {
     }
 
 
-    /// ping回调
-    var pingCallBack: ((Bool) -> Void)?
+    /// ping回调管理
+    private var pingCallbacks: [String: (Bool) -> Void] = [:]
+    private let pingQueue = DispatchQueue(label: "EsMessenger.ping", attributes: .concurrent)
 
     /// 需要关闭的Proxyu
     var needCloseHost: sockaddr_in?
@@ -76,7 +121,50 @@ public class EsMessenger: NSObject {
 
     override init() {
         super.init()
+        setupNotifications()
         run()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotifications() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(applicationDidEnterBackground),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+    }
+    
+    @objc private func applicationWillEnterForeground() {
+        DispatchQueue.main.async {
+            self.logDebugMessage("应用即将进入前台")
+            if self.wasRunningBeforeBackground && !self.isManualStopped {
+                self.logDebugMessage("恢复UDP监听")
+                self.run()
+            }
+        }
+    }
+    
+    @objc private func applicationDidEnterBackground() {
+        DispatchQueue.main.async {
+            self.logDebugMessage("应用进入后台")
+            self.wasRunningBeforeBackground = self.udp != nil && !self.isManualStopped
+            if self.wasRunningBeforeBackground {
+                self.logDebugMessage("释放UDP资源")
+                self.udp?.terminate()
+                self.udp = nil
+            }
+        }
     }
 }
 
@@ -103,15 +191,28 @@ public extension EsMessenger {
      - Parameter pingCallBack: ping 回调
      */
     func checkDeviceOnline(device: EsDevice, timeout: TimeInterval = 1, pingCallBack: ((Bool) -> Void)? = nil) {
-        self.pingCallBack = pingCallBack
+        let callbackId = "\(device.deviceIp):\(device.devicePort):\(Date().timeIntervalSince1970)"
+        
+        if let callback = pingCallBack {
+            pingQueue.async(flags: .barrier) {
+                self.pingCallbacks[callbackId] = callback
+            }
+        }
+        
         var msg: Message = .init(type: .ping, data: nil)
         msg.addConfig()
         sendData(message: msg,
                  toHost: device.deviceIp,
                  port: device.devicePort)
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
-            self?.pingCallBack?(false)
-            self?.pingCallBack = nil
+            self?.pingQueue.async(flags: .barrier) {
+                if let callback = self?.pingCallbacks.removeValue(forKey: callbackId) {
+                    DispatchQueue.main.async {
+                        callback(false)
+                    }
+                }
+            }
         }
     }
 
@@ -150,6 +251,7 @@ public extension EsMessenger {
      停止监听
      */
     func stop() {
+        isManualStopped = true
         udp?.terminate()
         
         if let host = needCloseHost {
@@ -161,6 +263,11 @@ public extension EsMessenger {
      继续监听
      */
     func resume() {
-        udp?.listen()
+        isManualStopped = false
+        if udp == nil {
+            run()
+        } else {
+            udp?.listen()
+        }
     }
 }

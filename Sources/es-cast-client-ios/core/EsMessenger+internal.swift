@@ -67,9 +67,9 @@ extension EsMessenger {
 
         switch type {
         case .ping:
+            let deviceKey = "\(host):\(port)"
             DispatchQueue.main.async { [weak self] in
-                self?.pingCallBack?(true)
-                self?.pingCallBack = nil
+                self?.handlePingResponse(from: deviceKey, success: true)
             }
         case .search:
             guard let dataDictionary = jsonDictionary["data"] as? [String: Any] else {
@@ -78,7 +78,7 @@ extension EsMessenger {
             let device = EsDevice(from: dataDictionary, ip: host, port: Int(port))
             DispatchQueue.main.async { [weak self] in
                 self?.onFindDeviceCallback?(device)
-                self?.delegates.forEach { $0.value?.onFindDevice(device) }
+                self?.notifyDelegates { $0.onFindDevice(device) }
             }
         default:
             guard let dataDictionary = jsonDictionary["data"] as? [String: Any] else {
@@ -90,7 +90,7 @@ extension EsMessenger {
             let event = EsEvent(deviceIp: host, devicePort: Int(port), data: dataDictionary)
             DispatchQueue.main.async { [weak self] in
                 self?.onReceiveEventCallback?(event)
-                self?.delegates.forEach { $0.value?.onReceiveEvent(event) }
+                self?.notifyDelegates { $0.onReceiveEvent(event) }
             }
         }
     }

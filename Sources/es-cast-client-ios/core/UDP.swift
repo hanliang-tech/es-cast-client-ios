@@ -20,6 +20,7 @@ class UDP {
     private var live = true
     private var queue: DispatchQueue?
     private let lock = DispatchSemaphore(value: 1)
+    private let stateLock = NSLock()
     private let bufferSize = 1024 * 4
     private static let pauseSleepMicroseconds: UInt32 = 10000
     private static let errorSleepMicroseconds: UInt32 = 10000
@@ -29,6 +30,9 @@ class UDP {
 
     init(port: Int = 0) throws {
         listener = socket(AF_INET, SOCK_DGRAM, 0)
+        guard listener != -1 else {
+            throw Exception.unableToBind
+        }
         if port > 0 {
             var opt: Int32 = 1
             setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &opt, socklen_t(MemoryLayout.size(ofValue: opt)))
@@ -48,10 +52,16 @@ class UDP {
     }
 
     func terminate() {
+        stateLock.lock()
+        defer { stateLock.unlock() }
         live = false
+        isRunning = false
     }
 
     func listen() {
+        stateLock.lock()
+        defer { stateLock.unlock() }
+        guard isRunning else { return }
         live = true
     }
 
@@ -150,18 +160,29 @@ class UDP {
         fcntl(listener, F_SETFL, flags | O_NONBLOCK)
         
         q.async {
-            while self.isRunning {
-                if !self.live {
+            while true {
+                self.stateLock.lock()
+                let shouldRun = self.isRunning
+                let isLive = self.live
+                self.stateLock.unlock()
+                
+                if !shouldRun {
+                    break
+                }
+                
+                if !isLive {
                     usleep(Self.pauseSleepMicroseconds)
                     continue
                 }
                 
                 self.lock.wait()
+                defer { self.lock.signal() }
+                
                 var host = sockaddr()
                 var size: UInt32 = socklen_t(MemoryLayout<sockaddr_storage>.size)
                 let r = recvfrom(self.listener, self.buffer, self.bufferSize, 0, &host, &size)
                 
-                if r > 0, size <= MemoryLayout<sockaddr_in>.size {
+                if r > 0 && r <= self.bufferSize && size <= MemoryLayout<sockaddr_in>.size {
                     let data = Data(bytes: self.buffer, count: r)
                     let address = UDP.cast(address: host)
                     let ip = String(cString: inet_ntoa(address.sin_addr))
@@ -174,8 +195,6 @@ class UDP {
                     }
                     usleep(Self.errorSleepMicroseconds)
                 }
-                
-                self.lock.signal()
             }
         }
     }

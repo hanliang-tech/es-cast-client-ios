@@ -99,6 +99,8 @@ extension EsMessenger {
         发送数据到指定的主机和端口。
      */
     func sendData(message: Message, toHost host: String, port: Int) {
+        LocalNetworkPermissionChecker(host: host, port: UInt16(port)) {} failure: { _ in }
+        
         guard let jsonStr = message.toDic().jsonString(),
               let jsonData = jsonStr.data(using: .utf8)
         else {

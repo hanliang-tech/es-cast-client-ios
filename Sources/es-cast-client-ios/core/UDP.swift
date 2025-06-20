@@ -156,8 +156,8 @@ class UDP {
         live = true
         isRunning = true
         
-        var flags = fcntl(listener, F_GETFL, 0)
-        fcntl(listener, F_SETFL, flags | O_NONBLOCK)
+        let flags = fcntl(listener, F_GETFL, 0)
+        _ = fcntl(listener, F_SETFL, flags | O_NONBLOCK)
         
         q.async {
             while true {

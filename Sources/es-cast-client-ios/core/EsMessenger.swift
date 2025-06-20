@@ -7,6 +7,7 @@
 
 import Foundation
 import Proxy
+import UIKit
 
 public protocol MessengerCallback: AnyObject {
     func onFindDevice(_ device: EsDevice)
@@ -79,7 +80,7 @@ public class EsMessenger: NSObject {
     }
     
     /// 线程安全的delegate通知
-    private func notifyDelegates(_ action: @escaping (MessengerCallback) -> Void) {
+    func notifyDelegates(_ action: @escaping (MessengerCallback) -> Void) {
         delegatesQueue.sync {
             self.delegates.forEach { wrapper in
                 if let delegate = wrapper.value {

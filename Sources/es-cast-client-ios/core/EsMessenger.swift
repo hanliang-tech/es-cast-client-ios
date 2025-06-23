@@ -39,7 +39,6 @@ public class EsMessenger: NSObject {
 
     /// 多播消息回调
     private var delegates: [WeakMessengerCallbackWrapper] = []
-    private let delegatesQueue = DispatchQueue(label: "EsMessenger.delegates", attributes: .concurrent)
     
     /// 监听状态管理
     private let stateQueue = DispatchQueue(label: "EsMessenger.state", attributes: .concurrent)
@@ -58,35 +57,43 @@ public class EsMessenger: NSObject {
 
     /// 添加回调对象
     public func addDelegate(_ delegate: MessengerCallback) {
-        delegatesQueue.async(flags: .barrier) {
-            if !self.delegates.contains(where: { $0.value === delegate }) {
-                self.delegates.append(WeakMessengerCallbackWrapper(value: delegate))
-            }
-            self.cleanDelegates()
+        if !delegates.contains(where: { wrapper in
+            guard let value = wrapper.value else { return false }
+            return value === delegate
+        }) {
+            delegates.append(WeakMessengerCallbackWrapper(value: delegate))
         }
+        cleanDelegates()
     }
 
     /// 移除回调对象
     public func removeDelegate(_ delegate: MessengerCallback) {
-        delegatesQueue.async(flags: .barrier) {
-            self.delegates.removeAll { $0.value === delegate }
-            self.cleanDelegates()
+        delegates.removeAll { wrapper in
+            guard let value = wrapper.value else { return true }
+            return value === delegate
         }
+        cleanDelegates()
     }
 
     /// 清理已释放的 delegate
     private func cleanDelegates() {
-        delegates = delegates.filter { $0.value != nil }
+        var indicesToRemove: [Int] = []
+        for (index, wrapper) in delegates.enumerated() {
+            if wrapper.value == nil {
+                indicesToRemove.append(index)
+            }
+        }
+        for index in indicesToRemove.reversed() {
+            delegates.remove(at: index)
+        }
+        logDebugMessage("清理已释放的代理，剩余代理数量: \(delegates.count)")
     }
     
-    /// 线程安全的delegate通知
+    /// delegate通知
     func notifyDelegates(_ action: @escaping (MessengerCallback) -> Void) {
-        delegatesQueue.sync {
-            self.delegates.forEach { wrapper in
-                if let delegate = wrapper.value {
-                    action(delegate)
-                }
-            }
+        let validDelegates = delegates.compactMap { $0.value }
+        validDelegates.forEach { delegate in
+            action(delegate)
         }
     }
     

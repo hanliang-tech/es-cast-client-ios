@@ -51,17 +51,17 @@ class UDP {
         buffer = buf
     }
 
-    func terminate() {
+    func pause() {
         stateLock.lock()
         defer { stateLock.unlock() }
         live = false
         isRunning = false
     }
 
-    func listen() {
+    func resume() {
         stateLock.lock()
         defer { stateLock.unlock() }
-        guard isRunning else { return }
+        isRunning = true
         live = true
     }
 

@@ -162,7 +162,7 @@ public class EsMessenger: NSObject {
             self.wasRunningBeforeBackground = self.udp != nil && !self.isManualStopped
             if self.wasRunningBeforeBackground {
                 self.logDebugMessage("释放UDP资源")
-                self.udp?.terminate()
+                self.udp?.pause()
                 self.udp = nil
             }
         }
@@ -253,7 +253,8 @@ public extension EsMessenger {
      */
     func stop() {
         isManualStopped = true
-        udp?.terminate()
+        udp?.pause()
+        udp = nil
         
         if let host = needCloseHost {
             _ = udp?.send(to: host, with: Proxy.makeStop())
@@ -268,7 +269,7 @@ public extension EsMessenger {
         if udp == nil {
             run()
         } else {
-            udp?.listen()
+            udp?.resume()
         }
     }
 }

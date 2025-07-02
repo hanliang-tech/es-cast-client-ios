@@ -7,9 +7,8 @@
 import Foundation
 import Network
 
-private let type = "_preflight_check._tcp"
+private let type = "_es_local_network_check._tcp"
 
-@objc(EXLocalNetworkAccessManager)
 class LocalNetworkAuthorization: NSObject {
   @objc static func requestAuthorization(completion: @escaping (Bool) -> Void) {
     Task {
@@ -23,10 +22,9 @@ class LocalNetworkAuthorization: NSObject {
   }
 }
 
-/// Code taken from https://gist.github.com/mac-cain13/fa684f54a7ae1bba8669e78d28611784
 @discardableResult
 func requestLocalNetworkAuthorization() async throws -> Bool {
-  let queue = DispatchQueue(label: "host.exp.localNetworkAuthCheck")
+  let queue = DispatchQueue(label: "es-cast-client-ios.localNetworkAuthCheck")
 
   let listener = try NWListener(using: NWParameters(tls: .none, tcp: NWProtocolTCP.Options()))
   listener.service = NWListener.Service(name: UUID().uuidString, type: type)
@@ -35,9 +33,8 @@ func requestLocalNetworkAuthorization() async throws -> Bool {
   let parameters = NWParameters()
   parameters.includePeerToPeer = true
   let browser = NWBrowser(for: .bonjour(type: type, domain: nil), using: parameters)
-  // swiftlint:disable:next closure_body_length
+    
   return try await withTaskCancellationHandler {
-    // swiftlint:disable:next closure_body_length
     try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Bool, Error>) in
       class LocalState {
         var didResume = false
@@ -49,7 +46,6 @@ func requestLocalNetworkAuthorization() async throws -> Bool {
         }
         local.didResume = true
 
-        // Teardown listener and browser
         listener.stateUpdateHandler = { _ in }
         browser.stateUpdateHandler = { _ in }
         browser.browseResultsChangedHandler = { _, _ in }
@@ -59,7 +55,6 @@ func requestLocalNetworkAuthorization() async throws -> Bool {
         continuation.resume(with: result)
       }
 
-      // Do not setup listener/browser is we're already cancelled, it does work but logs a lot of very ugly errors
       if Task.isCancelled {
         resume(with: .failure(CancellationError()))
         return

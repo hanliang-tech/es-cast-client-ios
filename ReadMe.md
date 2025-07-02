@@ -21,7 +21,9 @@ target 'YourApp' do
   pod 'es-cast-client-ios'
 end
 ```
-然后在终端中运行 pod install 来安装依赖。   
+然后在终端中运行 pod install 来安装依赖。  
+
+需要添加Bonjour services,值为: _es_local_network_check._tcp 
 
 <img src="./demo.jpeg" alt="demo" style="zoom:25%;" /><img src="./demo2.jpg" alt="demo" style="zoom:25%;" />
 

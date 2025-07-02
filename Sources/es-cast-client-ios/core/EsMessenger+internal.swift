@@ -16,6 +16,14 @@ extension EsMessenger {
     }
 
     func run() {
+        LocalNetworkPermissionChecker() { [weak self] in
+            self?.startUDPServer()
+        } failure: { [weak self] error in
+            self?.onNetworkPermissionCallback?(error)
+        }
+    }
+
+    private func startUDPServer() {
         udp = try? UDP(port: 5000)
         try? udp?.run(callback: { [weak self] _, data, ip, prot in
             guard let self, let str = String(data: data, encoding: .utf8) else {
@@ -27,12 +35,14 @@ extension EsMessenger {
 
     /// 搜索设备
     func search() {
-        LocalNetworkPermissionChecker(host: "255.255.255.255", port: 4567) { [weak self] in
-            self?.search()
-        } failure: { [weak self] _ in
-            self?.logDebugMessage("获取网络权限失败")
+        LocalNetworkPermissionChecker { [weak self] in
+            self?.performSearch()
+        } failure: { [weak self] error in
+            self?.onNetworkPermissionCallback?(error)
         }
+    }
 
+    private func performSearch() {
         udp?.startProxy()
         guard let ip = Utils.getIPAddress(), Utils.isValidIPAddress(ip) else {
             return
@@ -101,12 +111,6 @@ extension EsMessenger {
         发送数据到指定的主机和端口。
      */
     func sendData(message: Message, toHost host: String, port: Int) {
-        LocalNetworkPermissionChecker(host: "255.255.255.255", port: 4567) { [weak self] in
-            self?.sendData(message: message, toHost: host, port: port)
-        } failure: { [weak self] _ in
-            self?.logDebugMessage("获取网络权限失败")
-        }
-
         guard let jsonStr = message.toDic().jsonString(),
               let jsonData = jsonStr.data(using: .utf8)
         else {

@@ -36,6 +36,7 @@ public class EsMessenger: NSObject {
     public var onFindDeviceCallback: ((EsDevice) -> Void)?
     /// 接收到事件回调
     public var onReceiveEventCallback: ((EsEvent) -> Void)?
+    public var onNetworkPermissionCallback: ((Error?) -> Void)?
 
     /// 多播消息回调
     private var delegates: [WeakMessengerCallbackWrapper] = []
@@ -187,8 +188,24 @@ public extension EsMessenger {
     /**
      开始搜索设备。
      */
-    func startDeviceSearch() {
-        search()
+    func startDeviceSearch(failure: ((Error?) -> Void)? = nil) {
+        LocalNetworkPermissionChecker() { [weak self] in
+            self?.search()
+        } failure: { error in
+            failure?(error)
+        }
+    }
+
+    // 检查状态后checkDeviceOnline
+    func checkDeviceOnlineAfterPermission(device: EsDevice,
+                                          timeout: TimeInterval = 1,
+                                          pingCallBack: ((Bool) -> Void)? = nil,
+                                          failure: ((Error?) -> Void)? = nil) {
+        LocalNetworkPermissionChecker() { [weak self] in
+            self?.checkDeviceOnline(device: device, timeout: timeout, pingCallBack: pingCallBack)
+        } failure: { error in
+            failure?(error)
+        }
     }
 
     /**

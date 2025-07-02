@@ -11,17 +11,14 @@ import NetworkExtension
 import UIKit
 
 class LocalNetworkPermissionChecker {
-    private var host: String
-    private var port: UInt16
     private var connection: NWConnection?
+    private var listener: NWListener?
     private var hasCalledCompletion = false
     private var grantedCallback: (() -> Void)?
     private var failureCallback: ((Error?) -> Void)?
     
     @discardableResult
-    init(host: String, port: UInt16, granted: @escaping () -> Void, failure: @escaping (Error?) -> Void) {
-        self.host = host
-        self.port = port
+    init(granted: @escaping () -> Void, failure: @escaping (Error?) -> Void) {
         self.grantedCallback = granted
         self.failureCallback = failure
         
@@ -30,26 +27,24 @@ class LocalNetworkPermissionChecker {
     
     deinit {
         connection?.cancel()
+        listener?.cancel()
     }
     
     private func startNetworkPermissionCheck() {
-        guard let port = NWEndpoint.Port(rawValue: port) else { return }
-        
-        connection = NWConnection(host: NWEndpoint.Host(host), port: port, using: .udp)
-        
-        connection?.stateUpdateHandler = { [weak self] state in
+        listener = try? NWListener(using: .tcp)
+        listener?.stateUpdateHandler = { [weak self] state in
             guard let self = self, !self.hasCalledCompletion else { return }
             
             switch state {
             case .ready:
                 self.hasCalledCompletion = true
                 self.grantedCallback?()
-                self.connection?.cancel()
+                self.listener?.cancel()
                 self.clearCallbacks()
             case .failed(let error):
                 self.hasCalledCompletion = true
                 self.failureCallback?(error)
-                self.connection?.cancel()
+                self.listener?.cancel()
                 self.clearCallbacks()
             case .cancelled:
                 break
@@ -57,8 +52,7 @@ class LocalNetworkPermissionChecker {
                 break
             }
         }
-        
-        connection?.start(queue: .main)
+        listener?.start(queue: .main)
     }
     
     private func clearCallbacks() {

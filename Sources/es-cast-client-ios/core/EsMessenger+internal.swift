@@ -21,13 +21,15 @@ extension EsMessenger {
             guard let self, let str = String(data: data, encoding: .utf8) else {
                 return
             }
-            self.server(didReceiveMessage: str, fromHost: ip, port: prot)
+            server(didReceiveMessage: str, fromHost: ip, port: prot)
         })
     }
 
-    // 搜索设备
+    /// 搜索设备
     func search() {
-        LocalNetworkPermissionChecker(host: "255.255.255.255", port: 4567) {} failure: { [weak self] _ in
+        LocalNetworkPermissionChecker(host: "255.255.255.255", port: 4567) { [weak self] in
+            self?.search()
+        } failure: { [weak self] _ in
             self?.logDebugMessage("获取网络权限失败")
         }
 
@@ -40,8 +42,8 @@ extension EsMessenger {
         let ports = [5000, 5001]
         let hosts = (2 ... 254).map { "\(ipPrefix).\($0)" }
 
-        ports.forEach { port in
-            hosts.forEach { host in
+        for port in ports {
+            for host in hosts {
                 if host != ip {
                     DispatchQueue.global().async {
                         var msg: Message = .init(type: .search, data: nil)
@@ -99,8 +101,12 @@ extension EsMessenger {
         发送数据到指定的主机和端口。
      */
     func sendData(message: Message, toHost host: String, port: Int) {
-        LocalNetworkPermissionChecker(host: host, port: UInt16(port)) {} failure: { _ in }
-        
+        LocalNetworkPermissionChecker(host: "255.255.255.255", port: 4567) { [weak self] in
+            self?.sendData(message: message, toHost: host, port: port)
+        } failure: { [weak self] _ in
+            self?.logDebugMessage("获取网络权限失败")
+        }
+
         guard let jsonStr = message.toDic().jsonString(),
               let jsonData = jsonStr.data(using: .utf8)
         else {

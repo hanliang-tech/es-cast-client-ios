@@ -13,64 +13,56 @@ import UIKit
 class LocalNetworkPermissionChecker {
     private var host: String
     private var port: UInt16
-    private var checkPermissionStatus: DispatchWorkItem?
-    
-    private lazy var detectDeclineTimer: Timer? = Timer.scheduledTimer(
-        withTimeInterval: .zero,
-        repeats: false,
-        block: { [weak self] _ in
-            guard let checkPermissionStatus = self?.checkPermissionStatus else { return }
-            DispatchQueue.main.asyncAfter(deadline: .now(), execute: checkPermissionStatus)
-        })
+    private var connection: NWConnection?
+    private var hasCalledCompletion = false
+    private var grantedCallback: (() -> Void)?
+    private var failureCallback: ((Error?) -> Void)?
     
     @discardableResult
     init(host: String, port: UInt16, granted: @escaping () -> Void, failure: @escaping (Error?) -> Void) {
         self.host = host
         self.port = port
+        self.grantedCallback = granted
+        self.failureCallback = failure
         
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationIsInBackground),
-            name: UIApplication.willResignActiveNotification,
-            object: nil)
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(applicationIsInForeground),
-            name: UIApplication.didBecomeActiveNotification,
-            object: nil)
-        
-        actionRequestNetworkPermissions(granted: granted, failure: failure)
+        startNetworkPermissionCheck()
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self)
+        connection?.cancel()
     }
     
-    private func actionRequestNetworkPermissions(granted: @escaping () -> Void, failure: @escaping (Error?) -> Void) {
+    private func startNetworkPermissionCheck() {
         guard let port = NWEndpoint.Port(rawValue: port) else { return }
         
-        let connection = NWConnection(host: NWEndpoint.Host(host), port: port, using: .udp)
-        connection.start(queue: .main)
+        connection = NWConnection(host: NWEndpoint.Host(host), port: port, using: .udp)
         
-        checkPermissionStatus = DispatchWorkItem(block: { [weak self] in
-            if connection.state == .ready {
-                self?.detectDeclineTimer?.invalidate()
-                granted()
-            } else {
-                failure(nil)
+        connection?.stateUpdateHandler = { [weak self] state in
+            guard let self = self, !self.hasCalledCompletion else { return }
+            
+            switch state {
+            case .ready:
+                self.hasCalledCompletion = true
+                self.grantedCallback?()
+                self.connection?.cancel()
+                self.clearCallbacks()
+            case .failed(let error):
+                self.hasCalledCompletion = true
+                self.failureCallback?(error)
+                self.connection?.cancel()
+                self.clearCallbacks()
+            case .cancelled:
+                break
+            default:
+                break
             }
-        })
+        }
         
-        detectDeclineTimer?.fireDate = Date() + 1
+        connection?.start(queue: .main)
     }
     
-    @objc private func applicationIsInBackground() {
-        detectDeclineTimer?.invalidate()
-    }
-    
-    @objc private func applicationIsInForeground() {
-        guard let checkPermissionStatus = checkPermissionStatus else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: checkPermissionStatus)
+    private func clearCallbacks() {
+        grantedCallback = nil
+        failureCallback = nil
     }
 }

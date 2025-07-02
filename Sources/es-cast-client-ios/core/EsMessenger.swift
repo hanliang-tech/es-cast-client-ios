@@ -25,7 +25,7 @@ public class EsMessenger: NSObject {
     public static let shared: EsMessenger = .init()
     /// 是否显示日志
     public var isDebugLogEnabled: Bool = true
-    
+
     public var config: ESConfig.Type = ESConfig.self
     /// 本机IP地址
     public var iPAddress: String? {
@@ -40,17 +40,17 @@ public class EsMessenger: NSObject {
 
     /// 多播消息回调
     private var delegates: [WeakMessengerCallbackWrapper] = []
-    
+
     /// 监听状态管理
     private let stateQueue = DispatchQueue(label: "EsMessenger.state", attributes: .concurrent)
     private var _isManualStopped: Bool = false
     private var _wasRunningBeforeBackground: Bool = false
-    
+
     private var isManualStopped: Bool {
         get { stateQueue.sync { _isManualStopped } }
         set { stateQueue.async(flags: .barrier) { self._isManualStopped = newValue } }
     }
-    
+
     private var wasRunningBeforeBackground: Bool {
         get { stateQueue.sync { _wasRunningBeforeBackground } }
         set { stateQueue.async(flags: .barrier) { self._wasRunningBeforeBackground = newValue } }
@@ -89,15 +89,15 @@ public class EsMessenger: NSObject {
         }
         logDebugMessage("清理已释放的代理，剩余代理数量: \(delegates.count)")
     }
-    
+
     /// delegate通知
     func notifyDelegates(_ action: @escaping (MessengerCallback) -> Void) {
-        let validDelegates = delegates.compactMap { $0.value }
-        validDelegates.forEach { delegate in
+        let validDelegates = delegates.compactMap(\.value)
+        for delegate in validDelegates {
             action(delegate)
         }
     }
-    
+
     /// 处理ping响应
     func handlePingResponse(from deviceKey: String, success: Bool) {
         pingQueue.async(flags: .barrier) {
@@ -118,7 +118,6 @@ public class EsMessenger: NSObject {
         addDelegate(callback)
     }
 
-
     /// ping回调管理
     private var pingCallbacks: [String: (Bool) -> Void] = [:]
     private let pingQueue = DispatchQueue(label: "EsMessenger.ping", attributes: .concurrent)
@@ -133,11 +132,11 @@ public class EsMessenger: NSObject {
         setupNotifications()
         run()
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     private func setupNotifications() {
         NotificationCenter.default.addObserver(
             self,
@@ -145,7 +144,7 @@ public class EsMessenger: NSObject {
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(applicationDidEnterBackground),
@@ -153,17 +152,17 @@ public class EsMessenger: NSObject {
             object: nil
         )
     }
-    
+
     @objc private func applicationWillEnterForeground() {
         DispatchQueue.main.async {
             self.logDebugMessage("应用即将进入前台")
-            if self.wasRunningBeforeBackground && !self.isManualStopped {
+            if self.wasRunningBeforeBackground, !self.isManualStopped {
                 self.logDebugMessage("恢复UDP监听")
                 self.run()
             }
         }
     }
-    
+
     @objc private func applicationDidEnterBackground() {
         DispatchQueue.main.async {
             self.logDebugMessage("应用进入后台")
@@ -178,33 +177,37 @@ public class EsMessenger: NSObject {
 }
 
 public extension EsMessenger {
-    /**
+    /* 
      注册消息回调。
 
      - Parameter callback: 实现 MessengerCallback 协议的回调对象
      */
 
-
     /**
      开始搜索设备。
      */
     func startDeviceSearch(failure: ((Error?) -> Void)? = nil) {
-        LocalNetworkPermissionChecker() { [weak self] in
-            self?.search()
-        } failure: { error in
-            failure?(error)
+        LocalNetworkAuthorization.requestAuthorization { [weak self] authorized in
+            if authorized {
+                self?.search()
+            } else {
+                failure?(NSError(domain: "LocalNetworkAuthorization", code: 1, userInfo: [NSLocalizedDescriptionKey: "本地网络权限被拒绝"]))
+            }
         }
     }
 
-    // 检查状态后checkDeviceOnline
+    /// 检查状态后checkDeviceOnline
     func checkDeviceOnlineAfterPermission(device: EsDevice,
                                           timeout: TimeInterval = 1,
                                           pingCallBack: ((Bool) -> Void)? = nil,
-                                          failure: ((Error?) -> Void)? = nil) {
-        LocalNetworkPermissionChecker() { [weak self] in
-            self?.checkDeviceOnline(device: device, timeout: timeout, pingCallBack: pingCallBack)
-        } failure: { error in
-            failure?(error)
+                                          failure: ((Error?) -> Void)? = nil)
+    {
+        LocalNetworkAuthorization.requestAuthorization { [weak self] authorized in
+            if authorized {
+                self?.checkDeviceOnline(device: device, timeout: timeout, pingCallBack: pingCallBack)
+            } else {
+                failure?(NSError(domain: "LocalNetworkAuthorization", code: 1, userInfo: [NSLocalizedDescriptionKey: "Local network permission denied."]))
+            }
         }
     }
 
@@ -217,19 +220,19 @@ public extension EsMessenger {
      */
     func checkDeviceOnline(device: EsDevice, timeout: TimeInterval = 1, pingCallBack: ((Bool) -> Void)? = nil) {
         let callbackId = "\(device.deviceIp):\(device.devicePort):\(Date().timeIntervalSince1970)"
-        
+
         if let callback = pingCallBack {
             pingQueue.async(flags: .barrier) {
                 self.pingCallbacks[callbackId] = callback
             }
         }
-        
+
         var msg: Message = .init(type: .ping, data: nil)
         msg.addConfig()
         sendData(message: msg,
                  toHost: device.deviceIp,
                  port: device.devicePort)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
             self?.pingQueue.async(flags: .barrier) {
                 if let callback = self?.pingCallbacks.removeValue(forKey: callbackId) {
@@ -279,7 +282,7 @@ public extension EsMessenger {
         isManualStopped = true
         udp?.pause()
         udp = nil
-        
+
         if let host = needCloseHost {
             _ = udp?.send(to: host, with: Proxy.makeStop())
         }

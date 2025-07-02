@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "es-cast-client-ios",
     platforms: [
-        .iOS(.v12),
+        .iOS(.v13),
     ],
     products: [
         .library(

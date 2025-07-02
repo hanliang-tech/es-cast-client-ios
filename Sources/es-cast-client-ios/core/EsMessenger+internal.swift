@@ -16,14 +16,6 @@ extension EsMessenger {
     }
 
     func run() {
-        LocalNetworkPermissionChecker() { [weak self] in
-            self?.startUDPServer()
-        } failure: { [weak self] error in
-            self?.onNetworkPermissionCallback?(error)
-        }
-    }
-
-    private func startUDPServer() {
         udp = try? UDP(port: 5000)
         try? udp?.run(callback: { [weak self] _, data, ip, prot in
             guard let self, let str = String(data: data, encoding: .utf8) else {
@@ -35,14 +27,6 @@ extension EsMessenger {
 
     /// 搜索设备
     func search() {
-        LocalNetworkPermissionChecker { [weak self] in
-            self?.performSearch()
-        } failure: { [weak self] error in
-            self?.onNetworkPermissionCallback?(error)
-        }
-    }
-
-    private func performSearch() {
         udp?.startProxy()
         guard let ip = Utils.getIPAddress(), Utils.isValidIPAddress(ip) else {
             return

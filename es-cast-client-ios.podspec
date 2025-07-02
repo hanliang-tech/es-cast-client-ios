@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'es-cast-client-ios'
-    s.version          = '0.1.13'
+    s.version          = '0.1.14'
     s.summary          = 'A library for integrating es-cast functionality into iOS apps.'
 
     s.description      = <<-DESC
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
     s.author           = { 'birdmichael' => 'birdmichael126@gmail.com' }
     s.source           = { :git => 'https://github.com/hanliang-tech/es-cast-client-ios.git', :tag => s.version.to_s }
 
-    s.ios.deployment_target = '12.0'
+    s.ios.deployment_target = '13.0'
     s.swift_version = '5.0'
 
     s.vendored_frameworks = 'Proxy.xcframework'

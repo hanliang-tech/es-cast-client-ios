@@ -100,13 +100,11 @@ public class EsMessenger: NSObject {
 
     /// 处理ping响应
     func handlePingResponse(from deviceKey: String, success: Bool) {
-        pingQueue.async(flags: .barrier) {
+        DispatchQueue.main.async {
             let matchingKeys = self.pingCallbacks.keys.filter { $0.hasPrefix(deviceKey) }
             for key in matchingKeys {
                 if let callback = self.pingCallbacks.removeValue(forKey: key) {
-                    DispatchQueue.main.async {
-                        callback(success)
-                    }
+                    callback(success)
                 }
             }
         }
@@ -120,7 +118,6 @@ public class EsMessenger: NSObject {
 
     /// ping回调管理
     private var pingCallbacks: [String: (Bool) -> Void] = [:]
-    private let pingQueue = DispatchQueue(label: "EsMessenger.ping", attributes: .concurrent)
 
     /// 需要关闭的Proxyu
     var needCloseHost: sockaddr_in?
@@ -222,9 +219,7 @@ public extension EsMessenger {
         let callbackId = "\(device.deviceIp):\(device.devicePort):\(Date().timeIntervalSince1970)"
 
         if let callback = pingCallBack {
-            pingQueue.async(flags: .barrier) {
-                self.pingCallbacks[callbackId] = callback
-            }
+            pingCallbacks[callbackId] = callback
         }
 
         var msg: Message = .init(type: .ping, data: nil)
@@ -234,12 +229,8 @@ public extension EsMessenger {
                  port: device.devicePort)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + timeout) { [weak self] in
-            self?.pingQueue.async(flags: .barrier) {
-                if let callback = self?.pingCallbacks.removeValue(forKey: callbackId) {
-                    DispatchQueue.main.async {
-                        callback(false)
-                    }
-                }
+            if let callback = self?.pingCallbacks.removeValue(forKey: callbackId) {
+                callback(false)
             }
         }
     }

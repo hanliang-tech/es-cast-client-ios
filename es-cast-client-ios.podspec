@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name             = 'es-cast-client-ios'
-    s.version          = '0.1.15'
+    s.version          = '0.1.16'
     s.summary          = 'A library for integrating es-cast functionality into iOS apps.'
 
     s.description      = <<-DESC

@@ -196,7 +196,7 @@ public extension EsMessenger {
     /// 检查状态后checkDeviceOnline
     func checkDeviceOnlineAfterPermission(device: EsDevice,
                                           timeout: TimeInterval = 1,
-                                          pingCallBack: ((Bool) -> Void)? = nil,
+                                          pingCallBack: ((Bool) -> Void)?,
                                           failure: ((Error?) -> Void)? = nil)
     {
         LocalNetworkAuthorization.requestAuthorization { [weak self] authorized in
@@ -215,7 +215,7 @@ public extension EsMessenger {
      - Parameter timeout: 超时时间 默认1秒
      - Parameter pingCallBack: ping 回调
      */
-    func checkDeviceOnline(device: EsDevice, timeout: TimeInterval = 1, pingCallBack: ((Bool) -> Void)? = nil) {
+    func checkDeviceOnline(device: EsDevice, timeout: TimeInterval = 1, pingCallBack: ((Bool) -> Void)?) {
         let callbackId = "\(device.deviceIp):\(device.devicePort):\(Date().timeIntervalSince1970)"
 
         if let callback = pingCallBack {

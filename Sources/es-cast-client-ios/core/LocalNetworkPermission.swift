@@ -7,114 +7,62 @@
 import Foundation
 import Network
 
-private let type = "_es_local_network_check._tcp"
-
 class LocalNetworkAuthorization: NSObject {
-  @objc static func requestAuthorization(completion: @escaping (Bool) -> Void) {
-    Task {
-      do {
-        let result = try await requestLocalNetworkAuthorization()
-        completion(result)
-      } catch {
-        completion(false)
-      }
+    private var browser: NWBrowser?
+    private var netService: NetService?
+    private var completion: ((Bool) -> Void)?
+    
+    public func requestAuthorization(completion: @escaping (Bool) -> Void) {
+        if #available(iOS 14, *) {
+            requestLocalNetworkPermission(completion: completion)
+        } else {
+            completion(true)
+        }
     }
-  }
+
+    private func requestLocalNetworkPermission(completion: @escaping (Bool) -> Void) {
+        self.completion = completion
+        
+        let parameters = NWParameters()
+        parameters.includePeerToPeer = true
+        
+        let browser = NWBrowser(for: .bonjour(type: "_bonjour._tcp", domain: nil), using: parameters)
+        browser.stateUpdateHandler = { newState in
+            switch newState {
+            case .failed(let error):
+                print("Browser failed: \(error)")
+            case .ready,
+                 .cancelled:
+                break
+            case .waiting:
+                self.completion?(false)
+                self.tearDown()
+            default:
+                break
+            }
+        }
+        self.browser = browser
+        
+        let netService = NetService(domain: "local.", type: "_es_local_network_check._tcp", name: "LocalNetworkAuthorization", port: 39393)
+        netService.delegate = self
+        self.netService = netService
+        
+        browser.start(queue: .main)
+        netService.publish()
+    }
+    
+    private func tearDown() {
+        browser?.cancel()
+        browser = nil
+        netService?.stop()
+        netService = nil
+        completion = nil
+    }
 }
 
-@discardableResult
-func requestLocalNetworkAuthorization() async throws -> Bool {
-  let queue = DispatchQueue(label: "es-cast-client-ios.localNetworkAuthCheck")
-
-  let listener = try NWListener(using: NWParameters(tls: .none, tcp: NWProtocolTCP.Options()))
-  listener.service = NWListener.Service(name: UUID().uuidString, type: type)
-  listener.newConnectionHandler = { _ in } // Must be set or else the listener will error with POSIX error 22
-
-  let parameters = NWParameters()
-  parameters.includePeerToPeer = true
-  let browser = NWBrowser(for: .bonjour(type: type, domain: nil), using: parameters)
-    
-  return try await withTaskCancellationHandler {
-    try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Bool, Error>) in
-      class LocalState {
-        var didResume = false
-      }
-      let local = LocalState()
-      @Sendable func resume(with result: Result<Bool, Error>) {
-        if local.didResume {
-          return
-        }
-        local.didResume = true
-
-        listener.stateUpdateHandler = { _ in }
-        browser.stateUpdateHandler = { _ in }
-        browser.browseResultsChangedHandler = { _, _ in }
-        listener.cancel()
-        browser.cancel()
-
-        continuation.resume(with: result)
-      }
-
-      if Task.isCancelled {
-        resume(with: .failure(CancellationError()))
-        return
-      }
-
-      listener.stateUpdateHandler = { newState in
-        switch newState {
-        case .setup:
-          return
-        case .ready:
-          return
-        case .cancelled:
-          resume(with: .failure(CancellationError()))
-        case .failed(let error):
-          resume(with: .failure(error))
-        case .waiting(let error):
-          resume(with: .failure(error))
-        @unknown default:
-          return
-        }
-      }
-      listener.start(queue: queue)
-
-      browser.stateUpdateHandler = { newState in
-        switch newState {
-        case .setup:
-          return
-        case .ready:
-          return
-        case .cancelled:
-          resume(with: .failure(CancellationError()))
-        case .failed(let error):
-          resume(with: .failure(error))
-        case let .waiting(error):
-          switch error {
-          case .dns(DNSServiceErrorType(kDNSServiceErr_PolicyDenied)):
-            resume(with: .success(false))
-          default:
-            resume(with: .failure(error))
-          }
-        @unknown default:
-          return
-        }
-      }
-
-      browser.browseResultsChangedHandler = { results, _ in
-        if results.isEmpty {
-          return
-        }
-        resume(with: .success(true))
-      }
-      browser.start(queue: queue)
-
-      if Task.isCancelled {
-        resume(with: .failure(CancellationError()))
-        return
-      }
+extension LocalNetworkAuthorization: NetServiceDelegate {
+    func netServiceDidPublish(_ sender: NetService) {
+        completion?(true)
+        tearDown()
     }
-  } onCancel: {
-    listener.cancel()
-    browser.cancel()
-  }
 }

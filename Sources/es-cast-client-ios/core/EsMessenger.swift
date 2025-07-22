@@ -184,7 +184,7 @@ public extension EsMessenger {
      开始搜索设备。
      */
     func startDeviceSearch(failure: ((Error?) -> Void)? = nil) {
-        LocalNetworkAuthorization.requestAuthorization { [weak self] authorized in
+        LocalNetworkAuthorization().requestAuthorization { [weak self] authorized in
             if authorized {
                 self?.search()
             } else {
@@ -199,7 +199,7 @@ public extension EsMessenger {
                                           pingCallBack: ((Bool) -> Void)?,
                                           failure: ((Error?) -> Void)? = nil)
     {
-        LocalNetworkAuthorization.requestAuthorization { [weak self] authorized in
+        LocalNetworkAuthorization().requestAuthorization { [weak self] authorized in
             if authorized {
                 self?.checkDeviceOnline(device: device, timeout: timeout, pingCallBack: pingCallBack)
             } else {
